@@ -41,6 +41,13 @@ gamma_Ifta = 4 * np.pi * (plus + cross)* \
 np.vectorize(cmath.exp)(2.0 * np.pi * complex(0,1) * f * \
 (np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)))
 
+#Free Some RAM
+H1_plus = None
+H1_cross = None
+L1_plus = None
+L1_cross = None
+plus = None
+cross = None
 
 #t_delay = np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)
 #phase = 2.0 * np.pi * complex(0,1) * f * t_delay
@@ -62,4 +69,31 @@ print end - start
 #plt.close('all')
 #hp.mollview(np.absolute(cross), title = "Total Cross High Res")
 #plt.savefig('../output/Total Cross HR.png',dpi = 200)
-plt.close('all')
+
+# Parameters for the Low Resolution Maps
+nside2 = 128
+npix2 = hp.nside2npix(nside2)
+pix2 = np.arange(npix2)
+
+(theta, phi) = hp.pix2ang(nside2, np.arange(hp.nside2npix(nside2)))
+
+#ang_rot  = np.pi/4
+
+earth_rotation = (2 * np.pi) / 86164.1
+
+start = time.time()
+
+ii = 0
+for t in np.arange(1126626073, 1126712237, 96):
+    pix_rot = np.array(hp.ang2pix(nside,theta,phi - (earth_rotation * 96 * ii)))
+    gamma_Ifta_rot = list(gamma_Ifta[pix_rot])
+
+    hp.mollview(np.absolute(gamma_Ifta_rot),title=" ",cbar=False)
+    plt.savefig('../output/gamma_Ifta_rot_'+str(ii).zfill(3)+'.jpg')
+
+    plt.close('all')
+
+    ii = ii + 1
+
+end = time.time()
+print (end-start)
