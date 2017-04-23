@@ -37,8 +37,9 @@ plus = H1_plus * L1_plus
 cross = H1_cross * L1_cross
 
 #overlap reduction function
-gamma_Ifta = 4 * np.pi * (plus + cross)*
-np.vectorize(cmath.exp)(2.0 * np.pi * complex(0,1) * f * (np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)))
+gamma_Ifta = 4 * np.pi * (plus + cross)* \
+np.vectorize(cmath.exp)(2.0 * np.pi * complex(0,1) * f * \
+(np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)))
 
 
 #t_delay = np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)
@@ -50,15 +51,15 @@ end = time.time()
 
 print end - start
 
-hp.mollview(t_delay, title = "Time Delay Map  High Res")
-plt.savefig('../output/Time_Delay_Map.png',dpi = 200)
-plt.close('all')
-hp.mollview(exp_factor.real, title = "exp_factor High Res")
-plt.savefig('../output/exp_factor_HR.png',dpi = 200)
-plt.close('all')
-hp.mollview(np.absolute(plus), title = "Total Plus High Res")
-plt.savefig('../output/Total Plus HR.png',dpi = 200)
-plt.close('all')
-hp.mollview(np.absolute(cross), title = "Total Cross High Res")
-plt.savefig('../output/Total Cross HR.png',dpi = 200)
+#hp.mollview(t_delay, title = "Time Delay Map  High Res")
+#plt.savefig('../output/Time_Delay_Map.png',dpi = 200)
+#plt.close('all')
+#hp.mollview(exp_factor.real, title = "exp_factor High Res")
+#plt.savefig('../output/exp_factor_HR.png',dpi = 200)
+#plt.close('all')
+#hp.mollview(np.absolute(plus), title = "Total Plus High Res")
+#plt.savefig('../output/Total Plus HR.png',dpi = 200)
+#plt.close('all')
+#hp.mollview(np.absolute(cross), title = "Total Cross High Res")
+#plt.savefig('../output/Total Cross HR.png',dpi = 200)
 plt.close('all')
