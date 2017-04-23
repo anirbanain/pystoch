@@ -85,7 +85,7 @@ start = time.time()
 
 ii = 0
 for t in np.arange(1126626073, 1126712237, 96):
-    pix_rot = np.array(hp.ang2pix(nside,theta,phi - (earth_rotation * 96 * ii)))
+    pix_rot = np.array(hp.ang2pix(nside2,theta,phi - (earth_rotation * 96 * ii)))
     gamma_Ifta_rot = list(gamma_Ifta[pix_rot])
 
     hp.mollview(np.absolute(gamma_Ifta_rot),title=" ",cbar=False)
