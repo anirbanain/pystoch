@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 start = time.time()
 
 # Parameters for the High Resolution Map
-nside_hres = 2048
+nside_hres = 128
 npix_hres = hp.nside2npix(nside_hres)
 pix_hres = np.arange(npix_hres)
 
@@ -71,7 +71,7 @@ print end - start
 #plt.savefig('../output/Total Cross HR.png',dpi = 200)
 
 # Parameters for the Low Resolution Maps
-nside2 = 128
+nside2 = 16
 npix2 = hp.nside2npix(nside2)
 pix2 = np.arange(npix2)
 
