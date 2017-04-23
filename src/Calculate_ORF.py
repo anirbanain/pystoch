@@ -36,10 +36,15 @@ f = 1726
 plus = H1_plus * L1_plus
 cross = H1_cross * L1_cross
 
-t_delay = np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)
-phase = 2.0 * np.pi * complex(0,1) * f * t_delay
-exp_factor = np.vectorize(cmath.exp)(phase)
-gamma_Ifta = 4 * np.pi * (plus + cross) * exp_factor
+#overlap reduction function
+gamma_Ifta = 4 * np.pi * (plus + cross)*
+np.vectorize(cmath.exp)(2.0 * np.pi * complex(0,1) * f * (np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)))
+
+
+#t_delay = np.vectorize(H1.time_delay_from_detector)(L1,ra_hres,dec_hres,t_gps)
+#phase = 2.0 * np.pi * complex(0,1) * f * t_delay
+#exp_factor = np.vectorize(cmath.exp)(phase)
+#gamma_Ifta = 4 * np.pi * (plus + cross) * exp_factor
 
 end = time.time()
 
