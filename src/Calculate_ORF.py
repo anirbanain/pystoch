@@ -1,5 +1,6 @@
 import math
 import cmath
+import time
 import healpy as hp
 import numpy as np
 import pycbc.detector
@@ -7,8 +8,10 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
+start = time.time()
+
 # Parameters for the High Resolution Map
-nside_hres = 256
+nside_hres = 2048
 npix_hres = hp.nside2npix(nside_hres)
 pix_hres = np.arange(npix_hres)
 
@@ -38,14 +41,19 @@ phase = 2.0 * np.pi * complex(0,1) * f * t_delay
 exp_factor = np.vectorize(cmath.exp)(phase)
 gamma_Ifta = 4 * np.pi * (plus + cross) * exp_factor
 
+end = time.time()
+
+print end - start
+
 hp.mollview(t_delay, title = "Time Delay Map  High Res")
 plt.savefig('../output/Time_Delay_Map.png',dpi = 200)
-
+plt.close('all')
 hp.mollview(exp_factor.real, title = "exp_factor High Res")
 plt.savefig('../output/exp_factor_HR.png',dpi = 200)
-
+plt.close('all')
 hp.mollview(np.absolute(plus), title = "Total Plus High Res")
 plt.savefig('../output/Total Plus HR.png',dpi = 200)
-
+plt.close('all')
 hp.mollview(np.absolute(cross), title = "Total Cross High Res")
 plt.savefig('../output/Total Cross HR.png',dpi = 200)
+plt.close('all')
