@@ -13,14 +13,16 @@ nside_hres = 256
 npix_hres = hp.nside2npix(nside_hres)
 pix_hres = np.arange(npix_hres)
 
-(theta_hres, phi_hres) = hp.pix2ang(nside_hres, np.arange(hp.nside2npix(nside_hres)))
+(theta_hres, phi_hres) = \
+hp.pix2ang(nside_hres, np.arange(hp.nside2npix(nside_hres)))
 
 dec_hres = (np.pi/2) - theta_hres
 ra_hres = phi_hres
 
 H1 = pycbc.detector.Detector('H1')
 
-(H1_plus_hres, H1_cross_hres) = np.vectorize(H1.antenna_pattern)(ra_hres, dec_hres, 0, 1126626073)
+(H1_plus_hres, H1_cross_hres) = \
+np.vectorize(H1.antenna_pattern)(ra_hres, dec_hres, 0, 1126626073)
 
 H1_plus_hres = np.array(H1_plus_hres)
 
@@ -28,12 +30,12 @@ H1_plus_hres = np.array(H1_plus_hres)
 #pycharm edit 3
 #fig = plt.figure()
 hp.mollview(np.absolute(H1_plus_hres), title = "H1 Plus High Res")
-plt.savefig('./H1_Plus_HR.png')
+plt.savefig('../output/H1_Plus_HR.png',dpi = 200)
 
 H1_cross_hres = np.array(H1_cross_hres)
 
 hp.mollview(np.absolute(H1_cross_hres), title = "H1 Cross High Res")
-plt.savefig('./H1_Cross_HR.png')
+plt.savefig('../output/H1_Cross_HR.png',dpi = 200)
 
 
 #nside = 4
