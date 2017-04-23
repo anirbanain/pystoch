@@ -25,6 +25,7 @@ H1 = pycbc.detector.Detector('H1')
 H1_plus_hres = np.array(H1_plus_hres)
 
 #pycharm edit
+#pycharm edit 3
 #fig = plt.figure()
 hp.mollview(np.absolute(H1_plus_hres), title = "H1 Plus High Res")
 plt.savefig('./H1_Plus_HR.png')
