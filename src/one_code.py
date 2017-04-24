@@ -27,12 +27,14 @@ H1 = pycbc.detector.Detector('H1')
 L1 = pycbc.detector.Detector('L1')
 
 GPStime_start = 1126626073
+#GPStime_end = 1126626173
 GPStime_end = 1126712237
 segDuration = 26
-nSegment = np.int(math.floor((GPStime_end-GPStime_start)/segDuration))
+nSegment = np.int(math.floor((GPStime_end-GPStime_start)/segDuration)+1)
 
-fHigh = 1726
 fLow = 20
+#fHigh = 22
+fHigh = 1726
 deltaF = 0.25
 nFreqBin = np.int(math.floor((fHigh-fLow)/deltaF) + 1)
 
@@ -51,15 +53,25 @@ for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
     t_delay.append(t_delay_t)
 
 end = time.time()
-print (end-start)
-
+print 'Initial Loop done in', (end-start)
+start = time.time()
 csd = np.random.randn(nSegment,nFreqBin)
+end = time.time()
+print 'CSD generated in', (end-start)
 
 f = np.arange(fLow, fHigh+deltaF, deltaF)
-
+start = time.time()
 phase = (2.0 * np.pi * complex(0,1)) * np.array(t_delay)[:,:,None] * f[None,:]
-
+end = time.time()
+print 'Phase Calculated in ', (end-start)
+start = time.time()
 csd_mat = np.reshape(numpy.matlib.repmat(csd,1,npix),(nSegment,npix,nFreqBin))
+end = time.time()
+print 'CSD coverted in matrix in ', (end-start)
+start = time.time()
 f_factor = np.sum((np.vectorize(cmath.exp)(phase) * csd_mat),axis=2)
-
+end = time.time()
+print 'intermediate map calculated in ', (end-start)
 map = np.sum(f_factor * combined_antenna_response,axis=0)
+end = time.time()
+print (end-start)

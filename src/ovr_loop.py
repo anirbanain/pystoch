@@ -3,6 +3,7 @@ import cmath
 import time
 import healpy as hp
 import numpy as np
+import numpy.matlib
 import pycbc.detector
 import matplotlib
 matplotlib.use('Agg')
@@ -26,14 +27,16 @@ H1 = pycbc.detector.Detector('H1')
 L1 = pycbc.detector.Detector('L1')
 
 GPStime_start = 1126626073
-GPStime_end = 1126712237
+GPStime_end = 1126626173
+#GPStime_end = 1126712237
 segDuration = 26
-nSegment = math.floor((GPStime_end-GPStime_start)/segDuration)
+nSegment = np.int(math.floor((GPStime_end-GPStime_start)/segDuration)+1)
 
-fHigh = 1726
 fLow = 20
+fHigh = 22
+#fHigh = 1726
 deltaF = 0.25
-nFreqBin = math.floor((fHigh-fLow)/deltaF) + 1
+nFreqBin = np.int(math.floor((fHigh-fLow)/deltaF) + 1)
 
 combined_antenna_response = []
 t_delay = []
@@ -50,4 +53,16 @@ for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
     t_delay.append(t_delay_t)
 
 end = time.time()
-print (end-start)
+
+csd = np.random.randn(nSegment,nFreqBin)
+
+for f in np.arange(fLow, fHigh+deltaF, deltaF):
+    for t in np.arange(GPStime_start, GPStime_end, segDuration):
+        print t
+        print f
+
+
+#phase = (2.0 * np.pi * complex(0,1)) * np.array(t_delay)[:,:,None] * f[None,:]
+#csd_mat = np.reshape(numpy.matlib.repmat(csd,1,npix),(nSegment,npix,nFreqBin))
+#f_factor = np.sum((np.vectorize(cmath.exp)(phase) * csd_mat),axis=2)
+#map = np.sum(f_factor * combined_antenna_response,axis=0)
