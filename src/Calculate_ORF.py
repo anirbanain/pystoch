@@ -91,15 +91,12 @@ gamma_array = []
 for t in np.arange(1126626073, 1126712237, 96):
     pix_rot = np.array(hp.ang2pix(nside_hres,theta,phi - (earth_rotation * 96 * ii)))
     gamma_Ifta_rot = list(gamma_Ifta[pix_rot])
-<<<<<<< HEAD
     gamma_array.append(gamma_Ifta_rot)
     #hp.mollview(np.absolute(gamma_Ifta_rot),title=" ",cbar=False)
     #plt.savefig('../output/gamma_Ifta_rot_'+str(ii).zfill(3)+'.jpg')
-=======
 
-    hp.mollview(np.absolute(gamma_Ifta_rot),title=" ",cbar=False)
-    plt.savefig('../output/gamma_Ifta_rot_'+str(ii).zfill(3)+'.jpg',dpi = 200)
->>>>>>> 0ca07a2494463183b12ada39171f7e9803d1b006
+    #hp.mollview(np.absolute(gamma_Ifta_rot),title=" ",cbar=False)
+    #plt.savefig('../output/gamma_Ifta_rot_'+str(ii).zfill(3)+'.jpg',dpi = 200)
 
     plt.close('all')
     ii = ii + 1
