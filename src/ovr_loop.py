@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 start = time.time()
 
 # Parameters for the High Resolution Map
-nside = 1
+nside = 2
 npix = hp.nside2npix(nside)
 pix = np.arange(npix)
 
@@ -27,14 +27,14 @@ H1 = pycbc.detector.Detector('H1')
 L1 = pycbc.detector.Detector('L1')
 
 GPStime_start = 1126626073
-GPStime_end = 1126626173
-#GPStime_end = 1126712237
+#GPStime_end = 1126626173
+GPStime_end = 1126712237
 segDuration = 26
 nSegment = np.int(math.floor((GPStime_end-GPStime_start)/segDuration)+1)
 
 fLow = 20
-fHigh = 22
-#fHigh = 1726
+#fHigh = 21
+fHigh = 1726
 deltaF = 0.25
 nFreqBin = np.int(math.floor((fHigh-fLow)/deltaF) + 1)
 
@@ -53,14 +53,43 @@ for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
     t_delay.append(t_delay_t)
 
 end = time.time()
+print 'time for 2 2d mat',end-start
+start = time.time()
+
 
 csd = np.random.randn(nSegment,nFreqBin)
+t_delay = np.array(t_delay)
+combined_antenna_response = np.array(combined_antenna_response)
 
-for f in np.arange(fLow, fHigh+deltaF, deltaF):
-    for t in np.arange(GPStime_start, GPStime_end, segDuration):
-        print t
-        print f
+# for f in np.arange(fLow, fHigh+deltaF, deltaF):
+#     for t in np.arange(GPStime_start, GPStime_end, segDuration):
+#         print t
+#         print f
 
+map_final_mat = []
+
+ii = 0
+f = np.arange(fLow, fHigh+deltaF, deltaF)
+for t in np.arange(GPStime_start, GPStime_end, segDuration):
+
+    exp_term = np.vectorize(cmath.exp)\
+    (2*np.pi*complex(0,1)*(t_delay[ii,:][:,None] * f[None,:]))
+
+    f_mat = exp_term * (numpy.matlib.repmat(csd[ii,:],npix,1))
+    map_t =  np.sum(f_mat, axis=1)
+
+    ii =ii+1
+    if (ii%100) == 0:
+        #print (100*(ii/nSegment)),'% Done'
+        print ii, 'segments done'
+
+    map_final_mat.append(map_t)
+
+print ii, 'segments done'
+map_final = np.sum(map_final_mat,axis=0)
+
+end = time.time()
+print 'total processing and adding time',end-start
 
 #phase = (2.0 * np.pi * complex(0,1)) * np.array(t_delay)[:,:,None] * f[None,:]
 #csd_mat = np.reshape(numpy.matlib.repmat(csd,1,npix),(nSegment,npix,nFreqBin))
