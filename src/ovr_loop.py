@@ -53,7 +53,7 @@ for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
     t_delay.append(t_delay_t)
 
 end = time.time()
-print 'time for 2 2d mat',end-start
+print 'time taken for the overlap reduction function seed matrices',end-start,'sec'
 start = time.time()
 
 
@@ -89,7 +89,7 @@ print ii, 'segments done'
 map_final = np.sum(map_final_mat,axis=0)
 
 end = time.time()
-print 'total processing and adding time',end-start
+print 'total processing and post-processing time',end-start,'sec for nside =',nside
 
 #phase = (2.0 * np.pi * complex(0,1)) * np.array(t_delay)[:,:,None] * f[None,:]
 #csd_mat = np.reshape(numpy.matlib.repmat(csd,1,npix),(nSegment,npix,nFreqBin))
