@@ -42,7 +42,7 @@ nFreqBin = np.int(np.floor((fHigh-fLow)/deltaF) + 1)
 
 combined_antenna_response = []
 t_delay = []
-
+print 'Calculation of gamma starts'
 for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
 
     (ifo1_plus, ifo1_cross) = np.vectorize(ifo1.antenna_pattern)(ra, dec, 0, t_gps)
@@ -55,10 +55,10 @@ for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
     t_delay.append(t_delay_t)
 
 hp.mollview(t_delay_t, title = "Time Delay Map  High Res")
-plt.savefig('./output/Time_Delay_Map.png',dpi = 200)
+plt.savefig('./output/Time_Delay_Map.png',dpi = 300)
 plt.close('all')
 hp.mollview(combined_antenna_t, title = "combined_antenna_t")
-plt.savefig('./output/Combined_Antenna_Response.png',dpi = 200)
+plt.savefig('./output/Combined_Antenna_Response.png',dpi = 300)
 plt.close('all')
 # hp.mollview(np.absolute(plus), title = "Total Plus High Res")
 # plt.savefig('./output/Total Plus HR.png',dpi = 200)
@@ -95,11 +95,12 @@ for ii, f in enumerate(np.arange(fLow, fHigh+deltaF, deltaF)):
     exp_mat = exp_mat * exp_df
     map_f = np.sum(mat_fta, axis=0)
 
-    if ((ii%100) == 0 and ii != 0):
+    if ((ii%50) == 0 and ii != 0):
         print 'upto', f,'Hz done. Time per freq bin =', (time.time()-start)/ii, 'sec'
 
         hp.mollview(np.absolute(map_f),title='',cbar=False)
-        plt.savefig('./output/map_upto_'+str(f).zfill(3)+'_Hz.jpg')
+        plt.savefig('./output/map_upto_'+str(f).zfill(3)+'_Hz.png',dpi = 300)
+        plt.close('all')
         #sys.exit()
 
     map_final_mat.append(map_f)
@@ -110,7 +111,7 @@ print 'All freq bins (',ii+1,') done.'
 map_final = np.sum(map_final_mat ,axis=0)
 
 hp.mollview(np.absolute(map_final), title = " ")
-plt.savefig('./output/Map.png',dpi = 200)
+plt.savefig('./output/Map.png',dpi = 300)
 
 end = time.time()
 print 'total processing and post-processing time',end-start,'sec for nside =',nside
