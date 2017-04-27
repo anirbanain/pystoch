@@ -37,7 +37,7 @@ ifo1 = pycbc.detector.Detector(ifo1)
 ifo2 = pycbc.detector.Detector(ifo2)
 
 
-nSegment = np.int(np.floor((GPStime_end-GPStime_start)/segDuration)+1)
+nSegment = np.int(np.floor((GPStime_end-GPStime_start)/segDuration))
 nFreqBin = np.int(np.floor((fHigh-fLow)/deltaF) + 1)
 
 combined_antenna_response = []
@@ -54,6 +54,18 @@ for t_gps in np.arange(GPStime_start, GPStime_end, segDuration):
     t_delay_t = np.vectorize(ifo1.time_delay_from_detector)(ifo2,ra,dec,t_gps)
     t_delay.append(t_delay_t)
 
+hp.mollview(t_delay_t, title = "Time Delay Map  High Res")
+plt.savefig('./output/Time_Delay_Map.png',dpi = 200)
+plt.close('all')
+hp.mollview(combined_antenna_t, title = "combined_antenna_t")
+plt.savefig('./output/Combined_Antenna_Response.png',dpi = 200)
+plt.close('all')
+# hp.mollview(np.absolute(plus), title = "Total Plus High Res")
+# plt.savefig('./output/Total Plus HR.png',dpi = 200)
+# plt.close('all')
+# hp.mollview(np.absolute(cross), title = "Total Cross High Res")
+# plt.savefig('./output/Total Cross HR.png',dpi = 200)
+
 del theta,phi,ra,dec,ifo1_plus,ifo2_plus,ifo1_cross,ifo2_cross,t_delay_t,combined_antenna_t
 
 end = time.time()
@@ -66,30 +78,39 @@ combined_antenna_response = np.array(combined_antenna_response)
 
 map_final_mat = []
 
-f = np.arange(fLow, fHigh+deltaF, deltaF)
-f2 = 2*np.pi*complex(0,1)*f
+t = np.arange(GPStime_start, GPStime_end, segDuration)
 
+#f = np.arange(fLow, fHigh+deltaF, deltaF)
+#f2 = 2*np.pi*complex(0,1)*f
+print 'Total freq bins =', nFreqBin
+
+exp_mat = np.exp(2*np.pi*complex(0,1)*fLow*t_delay)
+exp_df = np.exp(2*np.pi*complex(0,1)*deltaF*t_delay)
 start = time.time()
-for ii, t in enumerate(np.arange(GPStime_start, GPStime_end, segDuration)):
-
-    tf_mat = t_delay[ii,:][:,None] * f2[None,:]
-    exp_term = np.exp(tf_mat)
-
-    f_mat = exp_term * (numpy.matlib.repmat(csd[ii,:],npix,1))
-    map_t =  np.sum(f_mat, axis=1)
+for ii, f in enumerate(np.arange(fLow, fHigh+deltaF, deltaF)):
+#    phase = 2*np.pi*complex(0,1)*f*t_delay
+#    exp_mat = exp_running
+    csd_mat = np.transpose(numpy.matlib.repmat(np.transpose(csd[:,ii]),npix,1))
+    mat_fta = combined_antenna_response * exp_mat * csd_mat
+    exp_mat = exp_mat * exp_df
+    map_f = np.sum(mat_fta, axis=0)
 
     if ((ii%100) == 0 and ii != 0):
-        print ii, 'segments done. Time per segment =', (time.time()-start)/ii, 'sec'
+        print 'upto', f,'Hz done. Time per freq bin =', (time.time()-start)/ii, 'sec'
+
+        hp.mollview(np.absolute(map_f),title='',cbar=False)
+        plt.savefig('./output/map_upto_'+str(f).zfill(3)+'_Hz.jpg')
         #sys.exit()
 
-    map_final_mat.append(map_t)
-#    sys.exit()
+    map_final_mat.append(map_f)
+    #sys.exit()
 
-print 'All segments (',ii+1,') done.'
+print 'All freq bins (',ii+1,') done.'
 
-map_final = np.sum(map_final_mat * combined_antenna_response,axis=0)
+map_final = np.sum(map_final_mat ,axis=0)
 
-del exp_term,f_mat,map_t
+hp.mollview(np.absolute(map_final), title = " ")
+plt.savefig('./output/Map.png',dpi = 200)
 
 end = time.time()
 print 'total processing and post-processing time',end-start,'sec for nside =',nside
