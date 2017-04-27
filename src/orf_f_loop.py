@@ -84,15 +84,15 @@ t = np.arange(GPStime_start, GPStime_end, segDuration)
 #f2 = 2*np.pi*complex(0,1)*f
 print 'Total freq bins =', nFreqBin
 
-exp_mat = np.exp(2*np.pi*complex(0,1)*fLow*t_delay)
-exp_df = np.exp(2*np.pi*complex(0,1)*deltaF*t_delay)
+exp_mat = np.exp(2*np.pi*complex(0,1)*fLow*t_delay)                             #1.65s
+exp_df = np.exp(2*np.pi*complex(0,1)*deltaF*t_delay)                            #1.51s
 start = time.time()
-for ii, f in enumerate(np.arange(fLow, fHigh+deltaF, deltaF)):
+for ii, f in enumerate(np.arange(fLow, fHigh+deltaF, deltaF)):                  #2.63s
 #    phase = 2*np.pi*complex(0,1)*f*t_delay
 #    exp_mat = exp_running
-    csd_mat = np.transpose(numpy.matlib.repmat(np.transpose(csd[:,ii]),npix,1))
-    mat_fta = combined_antenna_response * exp_mat * csd_mat
-    exp_mat = exp_mat * exp_df
+    csd_mat = np.transpose(numpy.matlib.repmat(np.transpose(csd[:,ii]),npix,1)) #380ms
+    mat_fta = combined_antenna_response * exp_mat * csd_mat                     #1.59s
+    exp_mat = exp_mat * exp_df                                                  #415ms
     map_f = np.sum(mat_fta, axis=0)
 
     if ((ii%50) == 0 and ii != 0):
